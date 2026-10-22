@@ -169,23 +169,3 @@ Interfaz oscura con paneles de cristal translúcido y fondo cinemático (imagen 
 | `--font-mono` | IBM Plex Mono | Etiquetas y metadatos |
 
 ---
-
-## Pendientes y mejoras conocidas
-
-- **Sesiones:** `procesar_edicion.php` usa un `id_usuario = 1` fijo. Falta `session_start()` y guardar `$_SESSION['id_usuario']` en el login.
-- **Edición de perfil:** `Editar.html` tiene un enlace "Aceptar" en lugar de un botón `submit`, así que el formulario no se envía. Además, el SP `modificar` sobrescribe la foto con `NULL` y no se procesa el archivo de imagen subido.
-- **Conexión:** `Conexion.php` imprime el error de conexión directamente en pantalla; conviene registrarlo en un log. Las credenciales deberían salir a un archivo de configuración fuera del repositorio.
-- **Salida HTML:** los scripts PHP imprimen datos del usuario sin escapar; usar `htmlspecialchars()` para evitar XSS.
-- **Páginas incompletas:** `post_detalles.html` tiene marcadores para pegar la barra lateral y el post; `perfil.html` es una versión mínima; `test_conexion.php` está vacío.
-- **Backend faltante:** publicar pistas, likes, comentarios, seguidores, notificaciones y reportes todavía no llaman a los procedimientos y vistas ya definidos en la BD (`sp_gestion_publicaciones`, `vw_feed_publicaciones`, `sp_reporte_estadisticas`).
-- **Imágenes y video** del fondo cargan desde un CDN externo; conviene guardarlos localmente.
-
----
-
-## Autores
-
-Proyecto de equipo para la materia de Bases de Datos. Agrega aquí los nombres de los integrantes.
-
-## Licencia
-
-Proyecto académico. Define aquí la licencia si lo publicas.
