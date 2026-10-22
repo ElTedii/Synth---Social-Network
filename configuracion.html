@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Synth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Styles/style.css">
+    <style>
+        .settings-panel {
+            background-color: #0d0d0d;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .settings-panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #292929;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+
+        .danger-zone {
+            border: 1px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+
+        .danger-zone h2 {
+            border-bottom-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra Lateral (Navegación principal) -->
+    <aside class="sidebar">
+        <div class="logo">Synth</div>
+        <ul class="menu">
+            <li><a href="index.html"><span class="icon">⌂</span><span>Descubrir</span></a></li>
+            <li><a href="#modal-crear"><span class="icon">＋</span><span>Subir Pista</span></a></li>
+            <li><a href="miperfil.html"><span class="icon">↗</span><span>Mi perfil</span></a></li>
+            <li><a href="notificaciones.html"><span class="icon">○</span><span>Actividad</span></a></li>
+
+            <!-- Enlaces de administración recuperados -->
+            <li><a href="reportes.html"><span class="icon">📊</span><span>Reportes</span></a></li>
+            <li><a href="configuracion.html"><span class="icon">⚙</span><span>Configuración</span></a></li>
+        </ul>
+
+        <div class="section-title">En Tendencia</div>
+        <ul class="menu">
+            <li><a href="#"><span class="icon">#</span><span>Ambient Textures</span></a></li>
+            <li><a href="#"><span class="icon">#</span><span>Late Night Mix</span></a></li>
+        </ul>
+
+        <!-- Botón de salir -->
+        <ul class="menu" style="margin-top: auto; position: absolute; bottom: 20px;">
+            <li><a href="login.html"><span class="icon">⎋</span><span>Cerrar Sesión</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main">
+        <div class="feed">
+            <h1 class="feed-title">Configuración de la Cuenta</h1>
+
+            <div class="settings-panel">
+                <h2>Seguridad y Privacidad</h2>
+                <form action="#" method="POST">
+                    <div class="setting-group">
+                        <label>Estado del Perfil</label>
+                        <select class="input-global">
+                            <option value="publico">Público</option>
+                            <option value="privado">Privado</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Cambiar Contraseña</label>
+                        <input type="password" class="input-global" placeholder="Nueva contraseña"
+                            style="margin-bottom: 10px;">
+                        <input type="password" class="input-global" placeholder="Confirmar nueva contraseña">
+                    </div>
+                    <button type="submit" class="btn-primary">Actualizar Seguridad</button>
+                </form>
+            </div>
+
+            <div class="settings-panel danger-zone">
+                <h2>Zona de Peligro</h2>
+                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Una vez que elimines tu cuenta, no hay
+                    vuelta atrás. Por favor, asegúrate.</p>
+                <form action="#" method="POST">
+                    <button type="submit" class="btn-danger">Eliminar mi cuenta</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

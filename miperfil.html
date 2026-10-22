@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mi Perfil - Synth</title>
+        <link rel="stylesheet" href="Styles/style.css">
+    </head>
+
+    <body>
+        <img class="scene-plate"
+            src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/7a7598ba-a6f8-42b4-ac39-98279dac4192.jpg"
+            alt="">
+        <video class="scene-video"
+            src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/d41b8c1d-f175-43b3-af22-7081133aa8de.mp4"
+            autoplay loop muted playsinline></video>
+
+        <!-- Barra Lateral (Navegación principal) -->
+        <aside class="sidebar">
+            <div class="logo">Synth</div>
+            <ul class="menu">
+                <li><a href="index.html"><span class="icon">⌂</span><span>Descubrir</span></a></li>
+                <li><a href="#modal-crear"><span class="icon">＋</span><span>Subir Pista</span></a></li>
+                <li><a href="miperfil.html"><span class="icon">↗</span><span>Mi perfil</span></a></li>
+                <li><a href="notificaciones.html"><span class="icon">○</span><span>Actividad</span></a></li>
+
+                <!-- Enlaces de administración recuperados -->
+                <li><a href="reportes.html"><span class="icon">📊</span><span>Reportes</span></a></li>
+                <li><a href="configuracion.html"><span class="icon">⚙</span><span>Configuración</span></a></li>
+            </ul>
+
+            <div class="section-title">En Tendencia</div>
+            <ul class="menu">
+                <li><a href="#"><span class="icon">#</span><span>Ambient Textures</span></a></li>
+                <li><a href="#"><span class="icon">#</span><span>Late Night Mix</span></a></li>
+            </ul>
+
+            <!-- Botón de salir -->
+            <ul class="menu" style="margin-top: auto; position: absolute; bottom: 20px;">
+                <li><a href="login.html"><span class="icon">⎋</span><span>Cerrar Sesión</span></a></li>
+            </ul>
+        </aside>
+
+        <main class="main">
+            <div class="feed">
+
+                <!-- Cabecera de Perfil -->
+                <section class="glass-panel profile-header">
+                    <div class="profile-photo" style="background-image: url('https://picsum.photos/400/400?random=8');">
+                    </div>
+                    <div class="profile-info">
+                        <span class="label-mono">Artista / Productor</span>
+                        <h1>Seckoe</h1>
+
+                        <div class="profile-stats">
+                            <div><strong>14</strong> Pistas</div>
+                            <div><strong>1,204</strong> Oyentes</div>
+                            <div><strong>85</strong> Siguiendo</div>
+                        </div>
+
+                        <p class="profile-bio">
+                            Explorando paisajes sonoros a través de sintetizadores análogos. Productor de audio para
+                            videojuegos y creador de texturas nocturnas.
+                        </p>
+
+                        <div style="display: flex; gap: 16px;">
+                            <a href="Editar.html" class="btn-primary" style="width: auto;">Editar Perfil</a>
+                            <button class="btn-primary"
+                                style="width: auto; background: transparent; border: 1px solid var(--ink-mono); color: var(--ink-main);">Compartir</button>
+                        </div>
+                    </div>
+                </section>
+                <h2 class="feed-title" style="font-size: 18px;">Pistas Recientes</h2>
+                <!-- Post Musical 1 (Destacado) -->
+                <article class="post-card" style="animation-delay: 0.1s;">
+                    <div class="post-header">
+                        <div class="avatar"></div>
+                        <div class="user-meta">
+                            <span class="username">Seckoe</span>
+                            <span class="date">OCT 22 · PISTA ORIGINAL</span>
+                        </div>
+                    </div>
+
+                    <div class="audio-body">
+                        <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/6f03fd17-7c05-4c28-a079-6c53f2d397e6.webp"
+                            class="cover-art" alt="Cover Art">
+                        <div class="track-info">
+                            <h2 class="track-title">Rooftop Forests & Midnight Synths</h2>
+                            <div class="waveform">
+                                <!-- Simulación de Waveform. En producción, esto se genera con JS o Canvas -->
+                                <div class="wave-bar" style="height: 10px; animation-delay: 0s;"></div>
+                                <div class="wave-bar" style="height: 15px; animation-delay: 0.1s;"></div>
+                                <div class="wave-bar" style="height: 8px; animation-delay: 0.2s;"></div>
+                                <div class="wave-bar active" style="height: 24px; animation-delay: 0.3s;"></div>
+                                <div class="wave-bar active" style="height: 32px; animation-delay: 0.4s;"></div>
+                                <div class="wave-bar active" style="height: 18px; animation-delay: 0.5s;"></div>
+                                <div class="wave-bar" style="height: 12px; animation-delay: 0.6s;"></div>
+                                <div class="wave-bar" style="height: 8px; animation-delay: 0.7s;"></div>
+                                <div class="wave-bar" style="height: 14px; animation-delay: 0.8s;"></div>
+                                <div class="wave-bar" style="height: 20px; animation-delay: 0.9s;"></div>
+                                <div class="wave-bar" style="height: 10px; animation-delay: 1s;"></div>
+                                <div class="wave-bar" style="height: 6px; animation-delay: 1.1s;"></div>
+                                <div class="wave-bar" style="height: 12px; animation-delay: 1.2s;"></div>
+                            </div>
+                        </div>
+                        <button class="play-btn" aria-label="Reproducir">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <p class="post-text">Una exploración sonora sobre las texturas de la ciudad en la madrugada. Grabado
+                        usando el Yamaha PSS-470 y mezclado en vivo. Úsenlo con auriculares.</p>
+
+                    <div class="post-actions">
+                        <!-- Botón de Like (ahora interactivo con JS) -->
+                        <button class="action-btn btn-like">♡ 124 LIKES</button>
+
+                        <!-- Enlace directo a post_detalles.html -->
+                        <a href="post_detalles.html" class="action-btn" style="text-decoration: none; padding-top: 2px;">
+                            ○ 12 COMENTARIOS
+                        </a>
+
+                        <button class="action-btn">↗ COMPARTIR</button>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </body>
+
+</html>

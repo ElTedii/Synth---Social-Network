@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Synth</title>
+    <link rel="stylesheet" href="Styles/style.css">
+</head>
+
+<body>
+    <!-- Fondos Cinemáticos -->
+    <img class="scene-plate"
+        src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/7a7598ba-a6f8-42b4-ac39-98279dac4192.jpg"
+        alt="">
+    <video class="scene-video"
+        src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/d41b8c1d-f175-43b3-af22-7081133aa8de.mp4"
+        autoplay loop muted playsinline></video>
+
+    <main class="auth-container">
+        <div class="glass-panel auth-box">
+            <h1 class="auth-title">Synth</h1>
+            <p class="auth-subtitle">INICIAR SESIÓN</p>
+
+            <form action="php/procesar_login.php" method="POST">
+                <label class="label-mono" for="correo">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo" class="input-global" placeholder="tu@correo.com" required>
+
+                <label class="label-mono" for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="contrasena" class="input-global" placeholder="••••••••"
+                    required>
+
+                <button type="submit" class="btn-primary">Entrar al Estudio</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--ink-sub);">
+                ¿No tienes una cuenta? <a href="registro.html"
+                    style="color: var(--ink-main); text-decoration: none; border-bottom: 1px solid var(--accent);">Registrarse</a>
+            </p>
+        </div>
+    </main>
+</body>
+
+</html>

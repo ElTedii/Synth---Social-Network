@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Synth</title>
+    <link rel="stylesheet" href="Styles/style.css">
+</head>
+
+<body>
+    <img class="scene-plate"
+        src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/7a7598ba-a6f8-42b4-ac39-98279dac4192.jpg"
+        alt="">
+    <video class="scene-video"
+        src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/d41b8c1d-f175-43b3-af22-7081133aa8de.mp4"
+        autoplay loop muted playsinline></video>
+
+    <!-- Barra Lateral (Navegación principal) -->
+    <aside class="sidebar">
+        <div class="logo">Synth</div>
+        <ul class="menu">
+            <li><a href="index.html"><span class="icon">⌂</span><span>Descubrir</span></a></li>
+            <li><a href="#modal-crear"><span class="icon">＋</span><span>Subir Pista</span></a></li>
+            <li><a href="miperfil.html"><span class="icon">↗</span><span>Mi perfil</span></a></li>
+            <li><a href="notificaciones.html"><span class="icon">○</span><span>Actividad</span></a></li>
+
+            <!-- Enlaces de administración recuperados -->
+            <li><a href="reportes.html"><span class="icon">📊</span><span>Reportes</span></a></li>
+            <li><a href="configuracion.html"><span class="icon">⚙</span><span>Configuración</span></a></li>
+        </ul>
+
+        <div class="section-title">En Tendencia</div>
+        <ul class="menu">
+            <li><a href="#"><span class="icon">#</span><span>Ambient Textures</span></a></li>
+            <li><a href="#"><span class="icon">#</span><span>Late Night Mix</span></a></li>
+        </ul>
+
+        <!-- Botón de salir -->
+        <ul class="menu" style="margin-top: auto; position: absolute; bottom: 20px;">
+            <li><a href="login.html"><span class="icon">⎋</span><span>Cerrar Sesión</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main">
+        <div style="max-width: 900px; margin: 0 auto;">
+
+            <h1 class="feed-title">Análisis de Audiencia</h1>
+
+            <!-- Tarjetas de Estadísticas -->
+            <div class="stats-grid">
+                <div class="glass-panel stat-card">
+                    <div class="stat-value">14</div>
+                    <div class="stat-label">Pistas Subidas</div>
+                </div>
+                <div class="glass-panel stat-card">
+                    <div class="stat-value">1.2K</div>
+                    <div class="stat-label">Reproducciones Totales</div>
+                </div>
+                <div class="glass-panel stat-card">
+                    <div class="stat-value">850</div>
+                    <div class="stat-label">Likes Recibidos</div>
+                </div>
+            </div>
+
+            <!-- Tabla de Rendimiento -->
+            <div class="glass-panel" style="overflow: hidden;">
+                <table class="data-table">
+                    <thead style="background: rgba(0,0,0,0.4);">
+                        <tr>
+                            <th>Pista / Título</th>
+                            <th>Fecha</th>
+                            <th>Reproducciones</th>
+                            <th>Likes</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: #fff;">Rooftop Forests & Midnight Synths</strong></td>
+                            <td>22 Oct 2026</td>
+                            <td>845</td>
+                            <td>124</td>
+                            <td><span style="color: var(--accent);">Activa</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: #fff;">Ep. 4: Game Audio Architecture</strong></td>
+                            <td>21 Oct 2026</td>
+                            <td>312</td>
+                            <td>89</td>
+                            <td><span style="color: var(--accent);">Activa</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: #fff;">Ambient Textures 01</strong></td>
+                            <td>15 Oct 2026</td>
+                            <td>1,024</td>
+                            <td>310</td>
+                            <td><span style="color: var(--accent);">Activa</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

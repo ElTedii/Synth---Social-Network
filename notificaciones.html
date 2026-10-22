@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - Synth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Styles/style.css">
+    <style>
+        .notification-item {
+            background-color: #0d0d0d;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        .notification-item:hover { background-color: #151515; }
+        .noti-text { flex: 1; margin-left: 15px; font-size: 15px; }
+        .noti-text strong { color: #fff; }
+        .noti-text span { color: #aaa; }
+        .noti-time { font-size: 12px; color: #777; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <!-- Barra Lateral (Navegación principal) -->
+    <aside class="sidebar">
+        <div class="logo">Synth</div>
+        <ul class="menu">
+            <li><a href="index.html"><span class="icon">⌂</span><span>Descubrir</span></a></li>
+            <li><a href="#modal-crear"><span class="icon">＋</span><span>Subir Pista</span></a></li>
+            <li><a href="miperfil.html"><span class="icon">↗</span><span>Mi perfil</span></a></li>
+            <li><a href="notificaciones.html"><span class="icon">○</span><span>Actividad</span></a></li>
+            
+            <!-- Enlaces de administración recuperados -->
+            <li><a href="reportes.html"><span class="icon">📊</span><span>Reportes</span></a></li>
+            <li><a href="configuracion.html"><span class="icon">⚙</span><span>Configuración</span></a></li>
+        </ul>
+
+        <div class="section-title">En Tendencia</div>
+        <ul class="menu">
+            <li><a href="#"><span class="icon">#</span><span>Ambient Textures</span></a></li>
+            <li><a href="#"><span class="icon">#</span><span>Late Night Mix</span></a></li>
+        </ul>
+        
+        <!-- Botón de salir -->
+        <ul class="menu" style="margin-top: auto; position: absolute; bottom: 20px;">
+            <li><a href="login.html"><span class="icon">⎋</span><span>Cerrar Sesión</span></a></li>
+        </ul>
+    </aside>
+    
+    <main class="main">
+        <div class="feed">
+            <h1 class="feed-title">Notificaciones</h1>
+            
+            <div class="notification-item">
+                <div class="avatar"></div>
+                <div class="noti-text">
+                    <strong>Usuario 2</strong> comenzó a seguirte.
+                </div>
+                <span class="noti-time">Hace 10 min</span>
+            </div>
+
+            <div class="notification-item">
+                <div class="avatar"></div>
+                <div class="noti-text">
+                    <strong>Usuario 3</strong> le dio "Me gusta" a tu publicación.
+                </div>
+                <span class="noti-time">Hace 1 hora</span>
+            </div>
+
+            <div class="notification-item">
+                <div class="avatar"></div>
+                <div class="noti-text">
+                    <strong>Usuario 1</strong> comentó: <span>"¡Excelente aporte!"</span>
+                </div>
+                <span class="noti-time">Hace 2 días</span>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

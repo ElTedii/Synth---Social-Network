@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicación - Synth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Styles/style.css">
+    <style>
+        .comments-section { margin-top: 20px; border-top: 1px solid #292929; padding-top: 20px; }
+        .comment { display: flex; margin-bottom: 15px; }
+        .comment-content { background-color: #151515; padding: 12px 15px; border-radius: 8px; flex: 1; margin-left: 12px; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .comment-header strong { font-size: 14px; }
+        .comment-header span { font-size: 12px; color: #777; }
+        .comment-body { font-size: 14px; color: #ddd; line-height: 1.4; }
+        .add-comment { display: flex; margin-top: 20px; }
+        .add-comment input { flex: 1; margin-left: 12px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <!-- Pega aquí tu <aside class="sidebar"> exacto de index.html -->
+
+    <main class="main">
+        <div class="feed">
+            <a href="index.html" style="color: #aaa; text-decoration: none; margin-bottom: 15px; display: inline-block;">← Volver al feed</a>
+            
+            <!-- Pega aquí tu <article class="post"> exacto de index.html -->
+            <article class="post" style="margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: none;">
+                <!-- Contenido de tu post -->
+            </article>
+
+            <!-- Sección de Comentarios -->
+            <div class="post" style="border-top-left-radius: 0; border-top-right-radius: 0; padding: 20px;">
+                <h3 style="font-size: 16px; margin-bottom: 20px;">Comentarios (2)</h3>
+                
+                <div class="comment">
+                    <div class="avatar-small"></div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <strong>Usuario 2</strong>
+                            <span>Hace 1 hora</span>
+                        </div>
+                        <div class="comment-body">¡Increíble publicación! Me sirvió mucho.</div>
+                    </div>
+                </div>
+
+                <!-- Formulario para agregar comentario -->
+                <form action="#" method="POST" class="add-comment">
+                    <div class="avatar-small"></div>
+                    <input type="text" class="input-global" placeholder="Escribe un comentario..." required>
+                    <button type="submit" class="btn-primary">Comentar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
