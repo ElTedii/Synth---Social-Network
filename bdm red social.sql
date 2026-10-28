@@ -158,7 +158,6 @@ DELIMITER ;
 -- =================================================================================
 DELIMITER //
 
--- (Mantuve intacto tu procedimiento original)
 CREATE PROCEDURE sp_gestion_usuarios(
     IN p_accion VARCHAR(20),
     IN p_id_usuario INT,
@@ -181,18 +180,44 @@ BEGIN
         SELECT id_usuario, nombre, correo, contrasena AS hash_contrasena, foto_perfil, estado
         FROM usuarios WHERE correo = p_correo AND estado = 'activo';
 
+    
     ELSEIF p_accion = 'modificar' THEN
-        IF NOT EXISTS (SELECT 1 FROM usuarios WHERE id_usuario = p_id_usuario) THEN
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El usuario no existe';
+
+        IF NOT EXISTS (
+            SELECT 1
+            FROM usuarios
+            WHERE id_usuario = p_id_usuario
+        ) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El usuario no existe';
+
+        ELSEIF EXISTS (
+            SELECT 1
+            FROM usuarios
+            WHERE correo = p_correo
+              AND id_usuario <> p_id_usuario
+        ) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El correo ya pertenece a otro usuario';
+
         ELSE
-            UPDATE usuarios SET nombre = p_nombre, correo = p_correo, contrasena = p_contrasena, foto_perfil = p_foto_perfil
+            UPDATE usuarios
+            SET nombre = p_nombre,
+                correo = p_correo,
+                contrasena = COALESCE(p_contrasena, contrasena),
+                foto_perfil = COALESCE(p_foto_perfil, foto_perfil)
             WHERE id_usuario = p_id_usuario;
+
             SELECT 'Usuario modificado correctamente' AS mensaje;
         END IF;
+
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Accion no valida';
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Accion no valida';
     END IF;
+
 END //
+
 
 
 -- NUEVO PROCEDURE: Gestión de Publicaciones (Crear y Eliminar lógicamente)
@@ -293,3 +318,5 @@ CALL sp_gestion_publicaciones('crear', NULL, 2, 'Ep. 4: Game Audio Architecture 
 INSERT INTO likes (id_publicacion, id_usuario) VALUES (1, 2);
 INSERT INTO likes (id_publicacion, id_usuario) VALUES (1, 3);
 INSERT INTO seguidores (id_seguidor, id_seguido) VALUES (2, 1);
+
+select *from usuarios;
