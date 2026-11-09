@@ -2,8 +2,8 @@
 class Conexion {
     private $host = "localhost";
     private $db_name = "red_social_bdm";
-    private $username = "root"; // Cambia esto por tu usuario de MySQL
-    private $password = "";     // Cambia esto por tu contraseña de MySQL
+    private $username = "root";
+    private $password = ""; 
     public $conn;
 
     // Método para obtener la conexión a la base de datos
