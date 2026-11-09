@@ -1,5 +1,5 @@
 <?php
-// 1. Llamar a tu archivo de conexión
+// 1. Llamar al archivo de conexión
 require_once 'Conexion.php';
 
 // 2. Verificar que los datos llegaron desde el formulario HTML
@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conexion_db = new Conexion();
         $conn = $conexion_db->getConexion();
 
-        // 5. Preparar la llamada a tu Stored Procedure
+        // 5. Preparar la llamada al Stored Procedure
         // Los parámetros son: accion, id_usuario (NULL al crear), nombre, correo, contrasena, foto_perfil (NULL por ahora)
         $sql = "CALL sp_gestion_usuarios('registrar', NULL, :nombre, :correo, :contrasena, NULL)";
         $stmt = $conn->prepare($sql);
@@ -32,12 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Si todo sale bien, te muestra el mensaje y te da un link para volver
+        // Si todo sale bien, muestra el mensaje y da un link para volver
         echo "<h1>" . $resultado['mensaje'] . "</h1>";
         echo "<a href='../login.html'>Ir a iniciar sesión</a>";
 
     } catch(PDOException $e) {
-        // Si el correo ya existe, tu Procedimiento Almacenado arrojará un error 45000 que atrapamos aquí
+        // Si el correo ya existe, el Procedimiento Almacenado arrojará un error 45000 que atrapamos aquí
         echo "<h2>Error al registrar: " . $e->getMessage() . "</h2>";
         echo "<a href='../registro.html'>Volver a intentar</a>";
     }
