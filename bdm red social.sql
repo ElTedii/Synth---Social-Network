@@ -744,4 +744,13 @@ CALL sp_agregar_anotacion(1, 2, '01:20 - 01:45', NULL, 'Gran transición, el uso
 select * from multimedia;
 
 CALL sp_obtener_imagen_publicacion(2);
+SELECT id_publicacion, titulo, ruta_audio, id_portada FROM vw_feed_publicaciones;
+SELECT id_multimedia, id_publicacion, tipo, ruta_archivo, LENGTH(archivo) AS bytes_imagen FROM multimedia
 
+
+ -- ALTER TABLE multimedia
+    -- MODIFY tipo ENUM('imagen','video','audio','partitura') NOT NULL;   -- no corran este query solo creeen la tabla multimedia si todavia no la han creado, si les pasa el error que no se ve la multimedia corran este query
+
+-- UPDATE multimedia
+   -- SET tipo = 'audio'
+ -- WHERE ruta_archivo LIKE 'uploads/audio/%';
