@@ -57,6 +57,31 @@ try {
 function escapar($valor) {
     return htmlspecialchars((string)($valor ?? ''), ENT_QUOTES, 'UTF-8');
 }
+
+
+function obtenerFotoPerfil($foto) {
+
+    if (empty($foto)) {
+        return null;
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $tipo = $finfo->buffer($foto);
+
+    $permitidos = [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/gif'
+    ];
+
+    if (!in_array($tipo, $permitidos, true)) {
+        return null;
+    }
+
+    return 'data:' . $tipo . ';base64,' . base64_encode($foto);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -120,7 +145,7 @@ function escapar($valor) {
             </li>
 
             <li>
-                <a href="miperfil.html">
+                <a href="miperfil.php">
                     <span class="icon">↗</span>
                     <span>Mi perfil</span>
                 </a>
@@ -223,7 +248,19 @@ function escapar($valor) {
 
                         <div class="post-header">
 
-                            <div class="avatar"></div>
+                            <?php $fotoAutor = obtenerFotoPerfil($p['foto_perfil'] ?? null); ?>
+
+                                <div
+                                    class="avatar"
+                                    <?php if ($fotoAutor): ?>
+                                        style="
+                                            background-image: url('<?= escapar($fotoAutor) ?>');
+                                            background-size: cover;
+                                            background-position: center;
+                                            background-repeat: no-repeat;
+                                        "
+                                    <?php endif; ?>>
+                                </div>
 
                             <div class="user-meta">
 
@@ -332,7 +369,7 @@ function escapar($valor) {
                             </span>
 
                             <a
-                                href="post_detalles.html?id=<?= (int)$p['id_publicacion'] ?>"
+                                href="post_detalles.php?id=<?= (int)$p['id_publicacion'] ?>"
                                 class="action-btn"
                                 style="text-decoration:none; padding-top:2px;">
 
