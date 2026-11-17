@@ -391,9 +391,10 @@ BEGIN
 END //
 
 
+-- DROP PROCEDURE IF EXISTS sp_gestion_publicaciones;
+
 DELIMITER //
 
--- SP: Gestionar publicaciones
 CREATE PROCEDURE sp_gestion_publicaciones(
     IN p_accion VARCHAR(20),
     IN p_id_publicacion INT,
@@ -422,7 +423,6 @@ BEGIN
 
         SET v_id_nueva_pub = LAST_INSERT_ID();
 
-        -- Guardar imagen
         IF p_archivo IS NOT NULL THEN
             INSERT INTO multimedia (
                 id_publicacion,
@@ -438,7 +438,6 @@ BEGIN
             );
         END IF;
 
-        -- Guardar ruta del audio
         IF p_ruta_audio IS NOT NULL THEN
             INSERT INTO multimedia (
                 id_publicacion,
@@ -466,8 +465,7 @@ BEGIN
         WHERE id_publicacion = p_id_publicacion
           AND id_usuario = p_id_usuario;
 
-        SELECT
-            'Publicación marcada como eliminada.' AS mensaje;
+        SELECT 'Publicación marcada como eliminada.' AS mensaje;
 
     -- LISTAR PUBLICACIONES DEL FEED
     ELSEIF p_accion = 'listar' THEN
@@ -483,7 +481,14 @@ BEGIN
         FROM vw_feed_publicaciones f
         ORDER BY f.fecha_publicacion DESC;
 
-    -- ACCIÓN NO VÁLIDA
+    -- OBTENER UNA PUBLICACIÓN ESPECÍFICA
+    ELSEIF p_accion = 'obtener' THEN
+
+        SELECT *
+        FROM vw_feed_publicaciones
+        WHERE id_publicacion = p_id_publicacion
+        LIMIT 1;
+
     ELSE
 
         SIGNAL SQLSTATE '45000'
@@ -494,34 +499,6 @@ BEGIN
 END //
 
 
--- SP: Agregar anotación colaborativa (Genius)
-CREATE PROCEDURE sp_agregar_anotacion(
-    IN p_id_publicacion INT,
-    IN p_id_usuario INT,
-    IN p_ref_tiempo VARCHAR(20),
-    IN p_ref_letra VARCHAR(150),
-    IN p_explicacion TEXT
-)
-BEGIN
-
-    INSERT INTO anotaciones_colaborativas (
-        id_publicacion,
-        id_usuario,
-        referencia_tiempo,
-        referencia_letra,
-        explicacion
-    )
-    VALUES (
-        p_id_publicacion,
-        p_id_usuario,
-        p_ref_tiempo,
-        p_ref_letra,
-        p_explicacion
-    );
-
-    SELECT 'Anotación agregada exitosamente.' AS mensaje;
-
-END //
 
 
 -- SP: Configurar perfil musical
@@ -596,7 +573,141 @@ BEGIN
     LIMIT 1;
 END //
 
+
+
 DELIMITER ;
+
+DELIMITER //
+
+-- DROP PROCEDURE IF EXISTS sp_gestion_comentarios;
+
+CREATE PROCEDURE sp_gestion_comentarios(
+    IN p_accion VARCHAR(20),
+    IN p_id_publicacion INT,
+    IN p_id_usuario INT,
+    IN p_contenido VARCHAR(300)
+)
+BEGIN
+
+    -- CONSULTAR COMENTARIOS
+    IF p_accion = 'listar' THEN
+
+        SELECT
+            id_comentario,
+            id_publicacion,
+            id_usuario,
+            nombre_usuario,
+            contenido,
+            fecha_comentario
+        FROM vw_comentarios_publicacion
+        WHERE id_publicacion = p_id_publicacion
+        ORDER BY fecha_comentario ASC;
+
+    -- AGREGAR COMENTARIO
+    ELSEIF p_accion = 'agregar' THEN
+
+        IF p_contenido IS NULL OR TRIM(p_contenido) = '' THEN
+
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El comentario no puede estar vacío.';
+
+        ELSEIF CHAR_LENGTH(p_contenido) > 300 THEN
+
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El comentario supera los 300 caracteres.';
+
+        ELSEIF NOT EXISTS (
+            SELECT 1
+            FROM publicaciones
+            WHERE id_publicacion = p_id_publicacion
+              AND estado = 'activa'
+        ) THEN
+
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'La publicación no existe o no está disponible.';
+
+        ELSEIF NOT EXISTS (
+            SELECT 1
+            FROM usuarios
+            WHERE id_usuario = p_id_usuario
+              AND estado = 'activo'
+        ) THEN
+
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El usuario no existe o está inactivo.';
+
+        ELSE
+
+            INSERT INTO comentarios (
+                id_publicacion,
+                id_usuario,
+                contenido
+            )
+            VALUES (
+                p_id_publicacion,
+                p_id_usuario,
+                TRIM(p_contenido)
+            );
+
+            SELECT
+                'Comentario agregado correctamente.' AS mensaje,
+                LAST_INSERT_ID() AS id_comentario;
+
+        END IF;
+
+    ELSE
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Acción no válida en comentarios.';
+
+    END IF;
+
+END //
+
+DELIMITER ;
+
+-- ==========================================
+-- SP: OBTENER DATOS DEL PERFIL
+-- ==========================================
+
+-- DROP PROCEDURE IF EXISTS sp_obtener_perfil;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_obtener_perfil(
+    IN p_id_usuario INT
+)
+BEGIN
+
+    SELECT *
+    FROM vw_perfil_usuario
+    WHERE id_usuario = p_id_usuario;
+
+END //
+
+
+-- ==========================================
+-- SP: LISTAR PUBLICACIONES DEL USUARIO
+-- ==========================================
+
+-- DROP PROCEDURE IF EXISTS sp_listar_publicaciones_usuario;
+
+CREATE PROCEDURE sp_listar_publicaciones_usuario(
+    IN p_id_usuario INT
+)
+BEGIN
+
+    SELECT *
+    FROM vw_feed_publicaciones
+    WHERE id_usuario = p_id_usuario
+    ORDER BY fecha_publicacion DESC;
+
+END //
+
+DELIMITER ;
+
+
+
 
 
 -- =================================================================================
@@ -604,29 +715,57 @@ DELIMITER ;
 -- =================================================================================
 
 -- Vista 1: Feed principal (Original)
-CREATE VIEW vw_feed_publicaciones AS
-SELECT p.id_publicacion,p.id_usuario,u.nombre AS autor,p.titulo,p.fecha_publicacion,p.contenido,
- (SELECT m.ruta_archivo FROM multimedia m WHERE m.id_publicacion=p.id_publicacion AND m.tipo='audio' LIMIT 1) AS ruta_audio,
- (SELECT m.id_multimedia FROM multimedia m WHERE m.id_publicacion=p.id_publicacion AND m.tipo='imagen' LIMIT 1) AS id_portada,
- (SELECT COUNT(*) FROM likes l WHERE l.id_publicacion=p.id_publicacion) AS total_likes,
- (SELECT COUNT(*) FROM comentarios c WHERE c.id_publicacion=p.id_publicacion) AS total_comentarios,
- (SELECT COUNT(*) FROM compartidos s WHERE s.id_publicacion=p.id_publicacion) AS total_compartidos
-FROM publicaciones p INNER JOIN usuarios u ON p.id_usuario=u.id_usuario WHERE p.estado='activa';
-DELIMITER ;
--- Vista 2: Perfil Musical (NUEVO)
-CREATE VIEW vw_perfil_musical AS
-SELECT 
-    u.id_usuario,
-    u.nombre AS musico,
-    i.nombre AS instrumento,
-    ui.nivel_dominio,
-    g.nombre AS genero,
-    ug.relacion AS relacion_genero
-FROM usuarios u
-LEFT JOIN usuarios_instrumentos ui ON u.id_usuario = ui.id_usuario
-LEFT JOIN cat_instrumentos i ON ui.id_instrumento = i.id_instrumento
-LEFT JOIN usuarios_generos ug ON u.id_usuario = ug.id_usuario
-LEFT JOIN cat_generos g ON ug.id_genero = g.id_genero;
+
+CREATE OR REPLACE VIEW vw_feed_publicaciones AS
+SELECT
+    p.id_publicacion,
+    p.id_usuario,
+    u.nombre AS autor,
+    u.foto_perfil,
+    p.titulo,
+    p.fecha_publicacion,
+    p.contenido,
+
+    (
+        SELECT m.ruta_archivo
+        FROM multimedia m
+        WHERE m.id_publicacion = p.id_publicacion
+          AND m.tipo = 'audio'
+        LIMIT 1
+    ) AS ruta_audio,
+
+    (
+        SELECT m.id_multimedia
+        FROM multimedia m
+        WHERE m.id_publicacion = p.id_publicacion
+          AND m.tipo = 'imagen'
+        LIMIT 1
+    ) AS id_portada,
+
+    (
+        SELECT COUNT(*)
+        FROM likes l
+        WHERE l.id_publicacion = p.id_publicacion
+    ) AS total_likes,
+
+    (
+        SELECT COUNT(*)
+        FROM comentarios c
+        WHERE c.id_publicacion = p.id_publicacion
+    ) AS total_comentarios,
+
+    (
+        SELECT COUNT(*)
+        FROM compartidos s
+        WHERE s.id_publicacion = p.id_publicacion
+    ) AS total_compartidos
+
+FROM publicaciones p
+INNER JOIN usuarios u
+    ON p.id_usuario = u.id_usuario
+
+WHERE p.estado = 'activa';
+
 
 -- Vista 3: Biblioteca de Partituras (NUEVO)
 CREATE VIEW vw_biblioteca_partituras AS
@@ -713,6 +852,51 @@ SELECT
     s.fecha_seguimiento
 FROM seguidores s
 INNER JOIN usuarios u ON s.id_seguidor = u.id_usuario;
+
+CREATE OR REPLACE VIEW vw_comentarios_publicacion AS
+SELECT
+    c.id_comentario,
+    c.id_publicacion,
+    c.id_usuario,
+    u.nombre AS nombre_usuario,
+    c.contenido,
+    c.fecha_comentario
+FROM comentarios c
+INNER JOIN usuarios u
+    ON c.id_usuario = u.id_usuario;
+    
+-- ==========================================
+-- VISTA: DATOS DEL PERFIL DEL USUARIO
+-- ==========================================
+
+CREATE OR REPLACE VIEW vw_perfil_usuario AS
+SELECT
+    u.id_usuario,
+    u.nombre,
+    u.correo,
+    u.foto_perfil,
+
+    (
+        SELECT COUNT(*)
+        FROM publicaciones p
+        WHERE p.id_usuario = u.id_usuario
+          AND p.estado = 'activa'
+    ) AS total_pistas,
+
+    (
+        SELECT COUNT(*)
+        FROM seguidores s
+        WHERE s.id_seguido = u.id_usuario
+    ) AS total_seguidores,
+
+    (
+        SELECT COUNT(*)
+        FROM seguidores s
+        WHERE s.id_seguidor = u.id_usuario
+    ) AS total_siguiendo
+
+FROM usuarios u
+WHERE u.estado = 'activo';
 
 -- =================================================================================
 -- 6. POBLACIÓN DE DATOS (MOCK DATA)
