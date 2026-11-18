@@ -1,45 +1,101 @@
 <?php
-// 1. Llamar al archivo de conexión
+
 require_once 'Conexion.php';
 
-// 2. Verificar que los datos llegaron desde el formulario HTML
+// Verificar que el formulario se haya enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // 3. Capturar lo que el usuario escribió en los inputs
-    $nombre = $_POST['nombre'];
-    $correo = $_POST['correo'];
-    $contrasena = $_POST['contrasena'];
-    
-    // Por seguridad, encriptamos la contraseña antes de guardarla
+
+    // Obtener los datos del formulario
+    $nombre = $_POST['nombre'] ?? '';
+    $correo = $_POST['correo'] ?? '';
+    $contrasena = $_POST['contrasena'] ?? '';
+
+    // Encriptar la contraseña
     $hash_contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
 
+    // Inicialmente no hay fotografía
+    $foto_perfil = null;
+
+    // Comprobar si se seleccionó una imagen
+    if (
+        isset($_FILES['imagen_perfil']) &&
+        $_FILES['imagen_perfil']['error'] !== UPLOAD_ERR_NO_FILE
+    ) {
+
+        if ($_FILES['imagen_perfil']['error'] !== UPLOAD_ERR_OK) {
+            exit('Error al subir la imagen.');
+        }
+
+        // Comprobar el tipo de imagen
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $tipoImagen = $finfo->file($_FILES['imagen_perfil']['tmp_name']);
+
+        $tiposPermitidos = [
+            'image/jpeg',
+            'image/png'
+        ];
+
+        if (!in_array($tipoImagen, $tiposPermitidos, true)) {
+            exit('Solo se permiten imágenes JPG y PNG.');
+        }
+
+        // Leer el contenido binario de la imagen
+        $foto_perfil = file_get_contents(
+            $_FILES['imagen_perfil']['tmp_name']
+        );
+
+        if ($foto_perfil === false) {
+            exit('No se pudo leer la imagen.');
+        }
+    }
+
     try {
-        // 4. Conectarnos a la BD
+
+        // Conectar con la base de datos
         $conexion_db = new Conexion();
         $conn = $conexion_db->getConexion();
 
-        // 5. Preparar la llamada al Stored Procedure
-        // Los parámetros son: accion, id_usuario (NULL al crear), nombre, correo, contrasena, foto_perfil (NULL por ahora)
-        $sql = "CALL sp_gestion_usuarios('registrar', NULL, :nombre, :correo, :contrasena, NULL)";
+        // Llamar al procedimiento almacenado
+        $sql = "CALL sp_gestion_usuarios(
+            'registrar',
+            NULL,
+            :nombre,
+            :correo,
+            :contrasena,
+            :foto_perfil
+        )";
+
         $stmt = $conn->prepare($sql);
-        
-        // 6. Inyectar los datos de forma segura
-        $stmt->bindParam(':nombre', $nombre);
-        $stmt->bindParam(':correo', $correo);
-        $stmt->bindParam(':contrasena', $hash_contrasena);
-        
-        // 7. Ejecutar y mostrar el resultado
+
+        // Enviar los datos
+        $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+        $stmt->bindValue(':correo', $correo, PDO::PARAM_STR);
+        $stmt->bindValue(':contrasena', $hash_contrasena, PDO::PARAM_STR);
+
+        // Enviar la fotografía como BLOB o NULL
+        if ($foto_perfil !== null) {
+            $stmt->bindValue(':foto_perfil', $foto_perfil, PDO::PARAM_LOB);
+        } else {
+            $stmt->bindValue(':foto_perfil', null, PDO::PARAM_NULL);
+        }
+
+        // Ejecutar el procedimiento
         $stmt->execute();
+
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Si todo sale bien, muestra el mensaje y da un link para volver
-        echo "<h1>" . $resultado['mensaje'] . "</h1>";
+
+        $stmt->closeCursor();
+
+        echo "<h1>" . htmlspecialchars($resultado['mensaje']) . "</h1>";
         echo "<a href='../login.html'>Ir a iniciar sesión</a>";
 
-    } catch(PDOException $e) {
-        // Si el correo ya existe, el Procedimiento Almacenado arrojará un error 45000 que atrapamos aquí
-        echo "<h2>Error al registrar: " . $e->getMessage() . "</h2>";
+    } catch (PDOException $e) {
+
+        error_log('Error al registrar usuario: ' . $e->getMessage());
+
+        echo "<h2>Error al registrar el usuario.</h2>";
         echo "<a href='../registro.html'>Volver a intentar</a>";
     }
 }
+
 ?>

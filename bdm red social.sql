@@ -706,14 +706,98 @@ END //
 
 DELIMITER ;
 
+-- sp para seguimientos
+DELIMITER //
+CREATE PROCEDURE sp_gestion_seguidores(
+    IN p_accion VARCHAR(30),
+    IN p_id_seguidor INT,
+    IN p_id_seguido INT
+)
+BEGIN
 
+    IF p_accion = 'seguir' THEN
 
+        INSERT IGNORE INTO seguidores (
+            id_seguidor,
+            id_seguido
+        )
+        VALUES (
+            p_id_seguidor,
+            p_id_seguido
+        );
 
+        SELECT 'Seguimiento registrado.' AS mensaje;
 
--- =================================================================================
--- 5. VISTAS (VIEWS) - REQUISITO DE RÚBRICA: Mínimo 8
--- =================================================================================
+    ELSEIF p_accion = 'dejar_seguir' THEN
 
+        DELETE FROM seguidores
+        WHERE id_seguidor = p_id_seguidor
+          AND id_seguido = p_id_seguido;
+
+        SELECT 'Seguimiento eliminado.' AS mensaje;
+
+    ELSEIF p_accion = 'estado' THEN
+
+        SELECT EXISTS (
+            SELECT 1
+            FROM seguidores
+            WHERE id_seguidor = p_id_seguidor
+              AND id_seguido = p_id_seguido
+        ) AS siguiendo;
+
+    ELSEIF p_accion = 'conteos' THEN
+
+        SELECT
+            (SELECT COUNT(*)
+             FROM seguidores
+             WHERE id_seguido = p_id_seguido) AS total_seguidores,
+
+            (SELECT COUNT(*)
+             FROM seguidores
+             WHERE id_seguidor = p_id_seguido) AS total_siguiendo;
+
+    ELSE
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Acción de seguimiento no válida.';
+
+    END IF;
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+ -- para la seccion de actividad
+CREATE PROCEDURE sp_obtener_actividad_reciente(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT
+        a.tipo_actividad,
+        a.actor,
+        a.id_referencia,
+        a.fecha
+    FROM vw_actividad_reciente a
+    LEFT JOIN publicaciones p
+        ON a.id_referencia = p.id_publicacion
+        AND a.tipo_actividad IN ('Like', 'Comentario')
+    WHERE
+        (
+            a.tipo_actividad IN ('Like', 'Comentario')
+            AND p.id_usuario = p_id_usuario
+        )
+        OR
+        (
+            a.tipo_actividad = 'Nuevo Seguidor'
+            AND a.id_referencia = p_id_usuario
+        )
+    ORDER BY a.fecha DESC;
+END //
+
+DELIMITER ;
+
+DELIMITER ;
 -- Vista 1: Feed principal (Original)
 
 CREATE OR REPLACE VIEW vw_feed_publicaciones AS
@@ -888,6 +972,7 @@ SELECT
         FROM seguidores s
         WHERE s.id_seguido = u.id_usuario
     ) AS total_seguidores,
+
 
     (
         SELECT COUNT(*)

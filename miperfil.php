@@ -186,7 +186,7 @@ try {
             </li>
 
             <li>
-                <a href="notificaciones.html">
+                <a href="notificaciones.php">
                     <span class="icon">○</span>
                     <span>Actividad</span>
                 </a>

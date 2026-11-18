@@ -3,7 +3,9 @@ class Conexion {
     private $host = "localhost";
     private $db_name = "red_social_bdm";
     private $username = "root";
-    private $password = ""; 
+    private $password = "";
+    private $port = 3307;
+
     public $conn;
 
     // Método para obtener la conexión a la base de datos
@@ -11,17 +13,25 @@ class Conexion {
         $this->conn = null;
 
         try {
-            // Se establece la conexión utilizando PDO
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-            
-            // Configurar el modo de error de PDO para que lance excepciones
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            // Forzar el uso de caracteres UTF-8
-            $this->conn->exec("set names utf8");
-            
-        } catch(PDOException $exception) {
-            echo "Error de conexión: " . $exception->getMessage();
+            // Conexión mediante PDO usando el puerto 3307
+            $this->conn = new PDO(
+                "mysql:host=" . $this->host .
+                ";port=" . $this->port .
+                ";dbname=" . $this->db_name .
+                ";charset=utf8mb4",
+                $this->username,
+                $this->password
+            );
+
+            // Configurar el manejo de errores
+            $this->conn->setAttribute(
+                PDO::ATTR_ERRMODE,
+                PDO::ERRMODE_EXCEPTION
+            );
+
+        } catch (PDOException $exception) {
+            error_log("Error de conexión: " . $exception->getMessage());
+            echo "Error al conectar con la base de datos.";
         }
 
         return $this->conn;

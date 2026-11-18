@@ -152,7 +152,7 @@ function obtenerFotoPerfil($foto) {
             </li>
 
             <li>
-                <a href="notificaciones.html">
+                <a href="notificaciones.php">
                     <span class="icon">○</span>
                     <span>Actividad</span>
                 </a>
@@ -245,37 +245,62 @@ function obtenerFotoPerfil($foto) {
                     <article class="post-card">
 
                         <!-- Información del autor -->
+                            <div class="post-header">
 
-                        <div class="post-header">
+                                <?php
+                                    $fotoAutor = obtenerFotoPerfil($p['foto_perfil'] ?? null);
+                                    $urlPerfil = 'perfil.php?id=' . (int)$p['id_usuario'];
+                                ?>
 
-                            <?php $fotoAutor = obtenerFotoPerfil($p['foto_perfil'] ?? null); ?>
+                                <!-- Foto del autor: enlace a su perfil -->
+                                <a
+                                    href="<?= escapar($urlPerfil) ?>"
+                                    style="text-decoration: none;">
 
-                                <div
-                                    class="avatar"
-                                    <?php if ($fotoAutor): ?>
-                                        style="
-                                            background-image: url('<?= escapar($fotoAutor) ?>');
-                                            background-size: cover;
-                                            background-position: center;
-                                            background-repeat: no-repeat;
-                                        "
-                                    <?php endif; ?>>
+                                    <div
+                                        class="avatar"
+                                        <?php if ($fotoAutor): ?>
+                                            style="
+                                                background-image: url('<?= escapar($fotoAutor) ?>');
+                                                background-size: cover;
+                                                background-position: center;
+                                                background-repeat: no-repeat;
+                                            "
+                                        <?php endif; ?>>
+                                    </div>
+
+                                </a>
+
+                                <div class="user-meta">
+
+                                    <!-- Nombre del autor: enlace a su perfil -->
+                                    <a
+                                        href="<?= escapar($urlPerfil) ?>"
+                                        style="text-decoration: none; color: inherit;">
+
+                                        <span class="username">
+                                            <?= escapar($p['autor']) ?>
+                                        </span>
+
+                                    </a>
+
+                                    <span class="date">
+
+                                        <?= escapar(
+                                            date(
+                                                'd/m/Y H:i',
+                                                strtotime($p['fecha_publicacion'])
+                                            )
+                                        ) ?>
+
+                                        · PISTA ORIGINAL
+
+                                    </span>
+
                                 </div>
-
-                            <div class="user-meta">
-
-                                <span class="username">
-                                    <?= escapar($p['autor']) ?>
-                                </span>
-
-                                <span class="date">
-                                    <?= escapar(date('d/m/Y H:i', strtotime($p['fecha_publicacion']))) ?>
-                                    · PISTA ORIGINAL
-                                </span>
 
                             </div>
 
-                        </div>
 
 
                         <!-- Portada y reproductor -->
