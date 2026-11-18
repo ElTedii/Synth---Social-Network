@@ -5,7 +5,8 @@ session_start();
 
 require_once 'php/Conexion.php';
 
-// Verificar que el usuario haya iniciado sesión
+// Comprueba si existe el ID del usuario dentro de la sesión.
+// Si no existe, significa que no ha iniciado sesión.
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: login.html');
     exit;
@@ -19,7 +20,8 @@ if (!$db) {
     exit('No se pudo conectar con la base de datos.');
 }
 
-// Proteger los datos que se muestran en HTML
+// Esta función evita que los datos que vienen de la base de datos
+// puedan interpretarse como código HTML o JavaScript al mostrarlos.
 function escapar($valor) {
     return htmlspecialchars(
         (string)($valor ?? ''),
@@ -28,8 +30,11 @@ function escapar($valor) {
     );
 }
 
+// Obtiene el ID del usuario que inició sesión y lo convierte a entero.
 $id_usuario = (int)$_SESSION['id_usuario'];
 
+// Se inicializan las variables que almacenarán los datos del perfil,
+// las publicaciones y la imagen de perfil.
 $perfil = null;
 $publicaciones = [];
 $fotoPerfil = null;
@@ -44,7 +49,8 @@ try {
     $sql = "CALL sp_obtener_perfil(:id_usuario)";
 
     $stmt = $db->prepare($sql);
-
+   
+    // Envía el ID del usuario como parámetro entero al procedimiento.
     $stmt->bindValue(
         ':id_usuario',
         $id_usuario,
@@ -53,19 +59,26 @@ try {
 
     $stmt->execute();
 
+    // Obtiene el primer registro devuelto, que contiene los datos
+    // del perfil del usuario.
     $perfil = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $stmt->closeCursor();
-
+  
+    // Si no se encontró información del perfil, se detiene la página.
     if (!$perfil) {
         exit('No se encontró el perfil del usuario.');
     }
 
-    // Convertir la foto BLOB a una imagen que pueda mostrar HTML
+    // Comprueba si el usuario tiene una fotografía guardada
+    // en la columna foto_perfil de la base de datos
     if (!empty($perfil['foto_perfil'])) {
 
+        // Crea un objeto que permite identificar el tipo MIME
+        // del archivo a partir de sus datos binarios.
         $finfo = new finfo(FILEINFO_MIME_TYPE);
 
+        // Obtiene el formato de la imagen almacenada en el BLOB.
         $tipoImagen = $finfo->buffer($perfil['foto_perfil']);
 
         $tiposPermitidos = [
@@ -75,8 +88,14 @@ try {
             'image/gif'
         ];
 
+        // Comprueba que el archivo realmente corresponda
+        // a uno de los formatos permitidos.
         if (in_array($tipoImagen, $tiposPermitidos, true)) {
 
+            // Convierte los datos binarios de la imagen a Base64
+            // para poder utilizarlos directamente en HTML.
+            // También agrega el tipo MIME para que el navegador
+            // sepa qué formato de imagen debe mostrar.
             $fotoPerfil = 'data:' . $tipoImagen . ';base64,' .
                 base64_encode($perfil['foto_perfil']);
 
@@ -101,6 +120,8 @@ try {
 
     $stmt = $db->prepare($sql);
 
+    // Envía el ID del usuario para identificar qué publicaciones
+    // deben recuperarse
     $stmt->bindValue(
         ':id_usuario',
         $id_usuario,
@@ -109,6 +130,8 @@ try {
 
     $stmt->execute();
 
+    // Obtiene todos los registros devueltos y los guarda en un arreglo.
+    // Cada elemento del arreglo representa una publicación del usuario.
     $publicaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $stmt->closeCursor();

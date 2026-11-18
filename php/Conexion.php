@@ -4,7 +4,7 @@ class Conexion {
     private $db_name = "red_social_bdm";
     private $username = "root";
     private $password = "";
-    private $port = 3306; //o 3307, según el caso
+    private $port = 3307;
 
     public $conn;
 

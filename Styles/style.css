@@ -883,3 +883,73 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--accent);
 }
+
+/* Botón de like */
+.btn-like {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+/* Color cuando el usuario ya dio like */
+.btn-like[data-liked="1"] {
+    color: #e65b78;
+}
+
+/* Efecto al pasar el cursor */
+.btn-like:hover,
+.btn-ver-likes:hover {
+    opacity: 0.7;
+}
+
+/* Botón para consultar los usuarios */
+.btn-ver-likes {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+/* Ventana de usuarios */
+#modal-likes {
+    width: min(420px, 90%);
+    border: 1px solid var(--ink-mono);
+    border-radius: 12px;
+    padding: 0;
+    background: #171717;
+    color: white;
+}
+
+#modal-likes::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.modal-likes-content {
+    padding: 25px;
+}
+
+.modal-likes-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.usuario-like {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.usuario-like span:last-child {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+#cerrar-modal-likes {
+    margin-top: 20px;
+}
