@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -254,14 +253,14 @@ function obtenerFotoPerfil($foto) {
             </li>
 
             <li>
-                <a href="reportes.html">
+                <a href="reportes.php">
                     <span class="icon">📊</span>
                     <span>Reportes</span>
                 </a>
             </li>
 
             <li>
-                <a href="configuracion.html">
+                <a href="configuracion.php">
                     <span class="icon">⚙</span>
                     <span>Configuración</span>
                 </a>
@@ -293,15 +292,23 @@ function obtenerFotoPerfil($foto) {
 
         <!-- Cerrar sesión -->
 
+        <!-- Botón dinámico de Sesión -->
         <ul class="menu" style="margin-top: auto; position: absolute; bottom: 20px;">
-
-            <li>
-                <a href="php/cerrar_sesion.php">
-                    <span class="icon">⎋</span>
-                    <span>Cerrar Sesión</span>
-                </a>
-            </li>
-
+            <?php if (isset($_SESSION['id_usuario'])): ?>
+                <li>
+                    <a href="php/cerrar_sesion.php">
+                        <span class="icon">⎋</span>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            <?php else: ?>
+                <li>
+                    <a href="login.html">
+                        <span class="icon">→</span>
+                        <span>Iniciar Sesión</span>
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
 
     </aside>
