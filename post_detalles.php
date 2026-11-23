@@ -136,14 +136,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 try {
 
-    $sql = "CALL sp_gestion_publicaciones(
+$sql = "CALL sp_gestion_publicaciones(
         :accion,
         :id_publicacion,
         :id_usuario,
         :titulo,
         :contenido,
         :archivo,
-        :ruta_audio
+        :ruta_audio,
+        :ruta_video
     )";
 
     $stmt = $db->prepare($sql);
@@ -166,6 +167,7 @@ try {
     $stmt->bindValue(':contenido', null, PDO::PARAM_NULL);
     $stmt->bindValue(':archivo', null, PDO::PARAM_NULL);
     $stmt->bindValue(':ruta_audio', null, PDO::PARAM_NULL);
+    $stmt->bindValue(':ruta_video', null, PDO::PARAM_NULL);
 
     $stmt->execute();
 
@@ -476,22 +478,20 @@ try {
 
 
                 <!-- Reproductor -->
-
                 <?php if (!empty($publicacion['ruta_audio'])): ?>
-
-                    <audio
-                        controls
-                        preload="metadata"
-                        style="width:100%; margin-top:15px;">
-
-                        <source
-                            src="<?= escapar($publicacion['ruta_audio']) ?>"
-                            type="audio/mpeg">
-
+                    <audio controls preload="metadata" style="width:100%; margin-top:15px;">
+                        <source src="<?= escapar($publicacion['ruta_audio']) ?>" type="audio/mpeg">
                         Tu navegador no soporta la reproducción de audio.
-
                     </audio>
-
+                <?php elseif (!empty($publicacion['ruta_video'])): ?>
+                    <?php
+                        $extVideo = strtolower(pathinfo($publicacion['ruta_video'], PATHINFO_EXTENSION));
+                        $mimeVideo = ($extVideo === 'webm') ? 'video/webm' : 'video/mp4';
+                    ?>
+                    <video controls preload="metadata" style="width:100%; margin-top:15px; border-radius:10px; max-height:420px; background:#000;">
+                        <source src="<?= escapar($publicacion['ruta_video']) ?>" type="<?= $mimeVideo ?>">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
                 <?php endif; ?>
 
 

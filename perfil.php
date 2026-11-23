@@ -625,24 +625,21 @@ try {
 
                         </div>
 
-
-                        <!-- AUDIO -->
-
+                        <!-- AUDIO O VIDEO -->
                         <?php if (!empty($p['ruta_audio'])): ?>
-
-                            <audio
-                                controls
-                                preload="metadata"
-                                style="width: 100%; margin-top: 15px;">
-
-                                <source
-                                    src="<?= escapar($p['ruta_audio']) ?>"
-                                    type="audio/mpeg">
-
+                            <audio controls preload="metadata" style="width: 100%; margin-top: 15px;">
+                                <source src="<?= escapar($p['ruta_audio']) ?>" type="audio/mpeg">
                                 Tu navegador no soporta audio.
-
                             </audio>
-
+                        <?php elseif (!empty($p['ruta_video'])): ?>
+                            <?php
+                                $extVideo = strtolower(pathinfo($p['ruta_video'], PATHINFO_EXTENSION));
+                                $mimeVideo = ($extVideo === 'webm') ? 'video/webm' : 'video/mp4';
+                            ?>
+                            <video controls preload="metadata" style="width: 100%; margin-top: 15px; border-radius: 10px; max-height: 420px; background: #000;">
+                                <source src="<?= escapar($p['ruta_video']) ?>" type="<?= $mimeVideo ?>">
+                                Tu navegador no soporta video.
+                            </video>
                         <?php endif; ?>
 
 

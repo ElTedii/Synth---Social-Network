@@ -24,32 +24,26 @@ $publicaciones = [];
 try {
 
     // Consultar las publicaciones mediante el procedimiento almacenado
-    $sql = "CALL sp_gestion_publicaciones(
+$sql = "CALL sp_gestion_publicaciones(
         :accion,
         :id_publicacion,
         :id_usuario,
         :titulo,
         :contenido,
         :archivo,
-        :ruta_audio
+        :ruta_audio,
+        :ruta_video
     )";
 
     $stmt = $db->prepare($sql);
-
-    // Indicar que se desea listar las publicaciones
     $stmt->bindValue(':accion', 'listar', PDO::PARAM_STR);
-
-    // No se necesita un ID de publicación específico
     $stmt->bindValue(':id_publicacion', null, PDO::PARAM_NULL);
-
-    // Enviar el ID del usuario que inició sesión
     $stmt->bindValue(':id_usuario', (int) $_SESSION['id_usuario'], PDO::PARAM_INT);
-
-    // Parámetros que no se necesitan para listar
     $stmt->bindValue(':titulo', null, PDO::PARAM_NULL);
     $stmt->bindValue(':contenido', null, PDO::PARAM_NULL);
     $stmt->bindValue(':archivo', null, PDO::PARAM_NULL);
     $stmt->bindValue(':ruta_audio', null, PDO::PARAM_NULL);
+    $stmt->bindValue(':ruta_video', null, PDO::PARAM_NULL);
 
     $stmt->execute();
 
@@ -468,29 +462,21 @@ function obtenerFotoPerfil($foto) {
                         </div>
 
 
-                        <!-- Reproductor de audio real -->
-
+                        <!-- Reproductor de audio o video -->
                         <?php if (!empty($p['ruta_audio'])): ?>
-
-                            <audio
-                                controls
-                                preload="metadata"
-                                style="width:100%; margin-top:15px;">
-
-                                <source
-                                    src="<?= escapar($p['ruta_audio']) ?>"
-                                    type="audio/mpeg">
-
+                            <audio controls preload="metadata" style="width:100%; margin-top:15px;">
+                                <source src="<?= escapar($p['ruta_audio']) ?>" type="audio/mpeg">
                                 Tu navegador no soporta la reproducción de audio.
-
                             </audio>
-
-                        <?php else: ?>
-
-                            <p class="post-text">
-                                Esta publicación no tiene un archivo de audio.
-                            </p>
-
+                        <?php elseif (!empty($p['ruta_video'])): ?>
+                            <?php
+                                $extVideo = strtolower(pathinfo($p['ruta_video'], PATHINFO_EXTENSION));
+                                $mimeVideo = ($extVideo === 'webm') ? 'video/webm' : 'video/mp4';
+                            ?>
+                            <video controls preload="metadata" style="width:100%; margin-top:15px; border-radius:10px; max-height:420px; background:#000;">
+                                <source src="<?= escapar($p['ruta_video']) ?>" type="<?= $mimeVideo ?>">
+                                Tu navegador no soporta la reproducción de video.
+                            </video>
                         <?php endif; ?>
 
 
@@ -617,14 +603,19 @@ function obtenerFotoPerfil($foto) {
                     required></textarea>
 
 
+<label class="label-mono" for="tipo-medio">
+                    ¿Qué deseas subir?
+                </label>
+                <select id="tipo-medio" name="tipo_medio" class="input-global" style="margin-bottom:16px;">
+                    <option value="audio">Música / Audio (.mp3)</option>
+                    <option value="video">Video (.mp4 / .webm)</option>
+                </select>
+
                 <div style="display:flex; gap:16px; margin-bottom:24px;">
-
-                    <div style="flex:1;">
-
+                    <div id="grupo-audio" style="flex:1;">
                         <label class="label-mono" for="track-audio">
                             Archivo de Audio (.mp3)
                         </label>
-
                         <input
                             type="file"
                             id="track-audio"
@@ -633,16 +624,25 @@ function obtenerFotoPerfil($foto) {
                             accept=".mp3,audio/mpeg"
                             required
                             style="padding:9px;">
-
                     </div>
 
+                    <div id="grupo-video" style="flex:1; display:none;">
+                        <label class="label-mono" for="track-video">
+                            Archivo de Video (.mp4 / .webm)
+                        </label>
+                        <input
+                            type="file"
+                            id="track-video"
+                            name="video"
+                            class="input-global"
+                            accept="video/mp4,video/webm"
+                            style="padding:9px;">
+                    </div>
 
                     <div style="flex:1;">
-
                         <label class="label-mono" for="track-cover">
                             Portada (Opcional)
                         </label>
-
                         <input
                             type="file"
                             id="track-cover"
@@ -650,9 +650,7 @@ function obtenerFotoPerfil($foto) {
                             class="input-global"
                             accept="image/jpeg,image/png,image/webp"
                             style="padding:9px;">
-
                     </div>
-
                 </div>
 
 
@@ -885,6 +883,31 @@ function obtenerFotoPerfil($foto) {
         modalLikes.close();
 
     });
+
+    // Alternar entre subir Audio o Video en el modal
+    const selectTipo = document.getElementById('tipo-medio');
+    const grupoAudio = document.getElementById('grupo-audio');
+    const grupoVideo = document.getElementById('grupo-video');
+    const inputAudio = document.getElementById('track-audio');
+    const inputVideo = document.getElementById('track-video');
+
+    if (selectTipo) {
+        selectTipo.addEventListener('change', function () {
+            if (this.value === 'video') {
+                grupoAudio.style.display = 'none';
+                grupoVideo.style.display = 'block';
+                inputAudio.required = false;
+                inputAudio.value = '';
+                inputVideo.required = true;
+            } else {
+                grupoVideo.style.display = 'none';
+                grupoAudio.style.display = 'block';
+                inputVideo.required = false;
+                inputVideo.value = '';
+                inputAudio.required = true;
+            }
+        });
+    }
 
     </script>
 
