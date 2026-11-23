@@ -317,7 +317,7 @@ try {
             </li>
 
             <li>
-                <a href="#modal-crear">
+                <a href="index.php#modal-crear">
                     <span class="icon">＋</span>
                     <span>Subir Pista</span>
                 </a>
