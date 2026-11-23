@@ -62,9 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($accion === 'desactivar_cuenta') {
         try {
             // Cambia el estado a 'inactivo' (esto activa el trigger trg_auditoria_usuarios)
-            $stmt = $db->prepare("UPDATE usuarios SET estado = 'inactivo' WHERE id_usuario = :id");
+            $stmt = $db->prepare("CALL sp_gestion_usuarios('desactivar', :id, NULL, NULL, NULL, NULL)");
             $stmt->bindValue(':id', $id_usuario, PDO::PARAM_INT);
             $stmt->execute();
+            $stmt->closeCursor();
 
             // Destruir sesión y redirigir al login
             $_SESSION = [];
